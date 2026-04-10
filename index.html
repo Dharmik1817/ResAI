@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 
@@ -791,6 +792,33 @@ footer{
         </div>
       </div>
 
+      <!-- Trustless Economics Simulation -->
+      <div class="dash-section" style="border-top:2px solid var(--purple)">
+        <div class="dash-section-hdr">
+          <div>
+            <div class="dash-title">Vyapar Simulation Engine</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">Simulate Contractor A vs B economics over 36 months</div>
+          </div>
+          <button class="btn btn-sm" onclick="runEconomicsSimulation()" id="simBtn">Run Simulation</button>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.6">
+          <span style="color:var(--danger);font-weight:700">Contractor A:</span> Corners cut (fails at 3mo) &rarr; RHI penalties trigger.<br>
+          <span style="color:var(--good);font-weight:700">Contractor B:</span> Quality materials &rarr; 85% instant liquidity + 15% escrow release.
+        </div>
+        <div style="width:100%;height:220px;position:relative;">
+          <canvas id="vyaparChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--good);letter-spacing:1px;margin-bottom:10px">WARD RHI SCORECARD &mdash; PUBLIC</div>
+          <div id="rhi-scorecard"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -912,14 +940,24 @@ footer{
       const verdictBadge = t.verifyVerdict
         ? `<span style="font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;border:1px solid;${t.verifyVerdict==='VERIFIED'?'color:var(--good);border-color:var(--good)':t.verifyVerdict==='REVIEW'?'color:var(--warn);border-color:var(--warn)':'color:var(--dim);border-color:var(--dim)'}">${t.verifyVerdict} ${t.verifyScore||''}</span>`
         : '';
+        
+      let contractBadge = '';
+      if ((t.status||'').toUpperCase() === 'REPAIRED') {
+        contractBadge = `<span style="font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.1);color:var(--good);border:1px solid var(--good);">85% PAID · 15% ESCROW</span>`;
+      } else if ((t.status||'').toUpperCase() === 'REJECTED') {
+        contractBadge = `<span style="font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid var(--danger);">FUNDS ZEROED · REWORK</span>`;
+      }
+      
       return `
         <div class="ticket-card ${typeClass}">
           <div class="ticket-top">
             <div class="ticket-id">${t.id || '—'}</div>
             <div style="display:flex;gap:6px;align-items:center;">
               ${verdictBadge}
+              ${contractBadge}
               ${isNew ? '<span class="new-pill">● LIVE</span>' : ''}
               <div class="ticket-status ${(t.status||'OPEN').toLowerCase()}">${(t.status||'OPEN').toUpperCase()}</div>
+
             </div>
           </div>
           <div class="ticket-condition" style="color:${labelColor}">${(t.condition||'').toUpperCase().replace(/_/g,' ')}</div>
@@ -2577,6 +2615,84 @@ Scoring guide:
       <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:1px;margin-top:8px;line-height:1.8">
         RISK SCORE = repeat detections (40%) + age penalty + severity + rain forecast + dig history &nbsp;|&nbsp; Updates automatically as new tickets arrive
       </div>`;
+  }
+
+  // --- Trustless Economics Simulation Logic ---
+  let _vyaparChart = null;
+  function runEconomicsSimulation() {
+    const ctx = document.getElementById('vyaparChart');
+    if (!ctx) return;
+    
+    // Smooth scroll down to highlight the mic-drop moment for the video
+    ctx.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    if (_vyaparChart) { _vyaparChart.destroy(); }
+    
+    // Labels representing Time (Months)
+    const labels = ["M0", "M6", "M12", "M18", "M24", "M30", "M36"];
+    
+    // Contractor A: Cuts corners. High initial profit, but road breaks at M3. 
+    // AI flags it, penalties hit, zero final payout, forced rework.
+    const dataA = [8000, -2000, -5000, -5000, -5000, -5000, -5000]; 
+    
+    // Contractor B: Good materials. Instantly gets 85%. Escrow releases 15% at M12.
+    // Quality holds up, so profits stay high.
+    const dataB = [8500, 8500, 10000, 10000, 10000, 10000, 10000];
+
+    _vyaparChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Contractor A (Traditional/Corners Cut)',
+            data: dataA,
+            borderColor: '#dc2626',
+            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+            borderWidth: 2,
+            stepped: true, // Shows sharp penalty drops
+            fill: true
+          },
+          {
+            label: 'Contractor B (ResilientPath Model)',
+            data: dataB,
+            borderColor: '#16a34a',
+            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+            borderWidth: 3,
+            tension: 0.3,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 2500, easing: 'easeOutQuart' },
+        scales: {
+          y: { 
+            title: { display: true, text: 'Net Profit ($)', color: '#475569', font: { family: "'Share Tech Mono', monospace" } },
+            grid: { color: 'rgba(148, 163, 184, 0.2)' }
+          },
+          x: { 
+            grid: { color: 'rgba(148, 163, 184, 0.2)' }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: '#0f172a', font: { family: "'Share Tech Mono', monospace", size: 10 } } },
+          tooltip: {
+            titleFont: { family: "'Share Tech Mono', monospace" },
+            bodyFont: { family: "'Share Tech Mono', monospace" },
+            callbacks: {
+              afterLabel: function(context) {
+                if(context.datasetIndex === 0 && context.dataIndex === 1) return "⚠ Road broke. AI fired penalty & rework order.";
+                if(context.datasetIndex === 1 && context.dataIndex === 2) return "✔ 12M check passed. +15% escrow released.";
+                return null;
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
 </script>
