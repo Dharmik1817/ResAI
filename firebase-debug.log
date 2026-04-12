@@ -1,0 +1,31 @@
+[debug] [2026-04-12T13:44:17.620Z] ----------------------------------------------------------------------
+[debug] [2026-04-12T13:44:17.624Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\moksh\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-04-12T13:44:17.625Z] CLI Version:   15.14.0
+[debug] [2026-04-12T13:44:17.625Z] Platform:      win32
+[debug] [2026-04-12T13:44:17.625Z] Node Version:  v22.14.0
+[debug] [2026-04-12T13:44:17.625Z] Time:          Sun Apr 12 2026 19:14:17 GMT+0530 (India Standard Time)
+[debug] [2026-04-12T13:44:17.625Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-12T13:44:22.574Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-12T13:44:22.575Z] > authorizing via signed-in user (dharmikp1817@gmail.com)
+[debug] [2026-04-12T13:44:22.575Z] [iam] checking project chanakyas-road for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-04-12T13:44:22.577Z] Checked if tokens are valid: true, expires at: 1776004987656
+[debug] [2026-04-12T13:44:22.577Z] Checked if tokens are valid: true, expires at: 1776004987656
+[debug] [2026-04-12T13:44:22.578Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/chanakyas-road:testIamPermissions [none]
+[debug] [2026-04-12T13:44:22.578Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/chanakyas-road:testIamPermissions  x-goog-user-project=chanakyas-road
+[debug] [2026-04-12T13:44:22.578Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chanakyas-road:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-12T13:44:24.306Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/chanakyas-road:testIamPermissions 403
+[debug] [2026-04-12T13:44:24.306Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chanakyas-road:testIamPermissions {"error":{"code":403,"message":"Caller does not have required permission to use project chanakyas-road. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=chanakyas-road and then retry. Propagation of the new permission may take a few minutes.","status":"PERMISSION_DENIED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"USER_PROJECT_DENIED","domain":"googleapis.com","metadata":{"consoleUrl":"https://console.developers.google.com/iam-admin/iam?project=chanakyas-road","containerInfo":"chanakyas-road","consumer":"projects/chanakyas-road","service":"cloudresourcemanager.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"Caller does not have required permission to use project chanakyas-road. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=chanakyas-road and then retry. Propagation of the new permission may take a few minutes."},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Google developer console IAM admin","url":"https://console.developers.google.com/iam-admin/iam?project=chanakyas-road"}]}]}}
+[debug] [2026-04-12T13:44:24.307Z] [iam] error while checking permissions, command may fail: Request to https://cloudresourcemanager.googleapis.com/v1/projects/chanakyas-road:testIamPermissions had HTTP Error: 403, Caller does not have required permission to use project chanakyas-road. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=chanakyas-road and then retry. Propagation of the new permission may take a few minutes.
+[debug] [2026-04-12T13:44:24.308Z] Checked if tokens are valid: true, expires at: 1776004987656
+[debug] [2026-04-12T13:44:24.308Z] Checked if tokens are valid: true, expires at: 1776004987656
+[debug] [2026-04-12T13:44:24.308Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chanakyas-road [none]
+[debug] [2026-04-12T13:44:25.118Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chanakyas-road 403
+[debug] [2026-04-12T13:44:25.118Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chanakyas-road {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-04-12T13:44:25.119Z] Request to https://firebase.googleapis.com/v1beta1/projects/chanakyas-road had HTTP Error: 403, The caller does not have permission
+[debug] [2026-04-12T13:44:25.399Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/chanakyas-road had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\moksh\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\moksh\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\apiv2.js:333:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to get Firebase project chanakyas-road. Please make sure the project exists and your account has permission to access it.

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ResilientPath Demo Data Seeder</title>
+  <style>
+    body { font-family: 'Courier New', Courier, monospace; background: #0f172a; color: #e2e8f0; padding: 40px; }
+    h1 { color: #38bdf8; }
+    .btn { background: #0ea5e9; color: white; border: none; padding: 12px 24px; font-size: 16px; cursor: pointer; border-radius: 4px; font-weight: bold; font-family: inherit;}
+    .btn:hover { background: #0284c7; }
+    #log { margin-top: 20px; font-size: 14px; background: #1e293b; padding: 20px; border-radius: 4px; border: 1px solid #334155; min-height: 300px; max-height: 500px; overflow-y: auto;}
+    .success { color: #22c55e; }
+    .error { color: #ef4444; }
+  </style>
+</head>
+<body>
+
+  <h1>🚀 ResilientPath AI - Demo Data Seeder</h1>
+  <p>Run this script once to populate your Firebase Firestore with 50+ realistic road damage tickets across Vadodara for your Google Solution Challenge pitch.</p>
+  
+  <button class="btn" id="seedBtn" onclick="seedData()">Generate 50 Demo Tickets</button>
+  <button class="btn" style="background:#dc2626; margin-left: 10px;" id="clearBtn" onclick="clearData()">Clear All Tickets</button>
+
+  <div id="log">Logs will appear here...<br><br></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD9i78SfjG23Lj9AJtnISZ--k1xZUhNi_g",
+      authDomain: "chanakyas-road.firebaseapp.com",
+      projectId: "chanakyas-road",
+      storageBucket: "chanakyas-road.firebasestorage.app",
+      messagingSenderId: "950208319080",
+      appId: "1:950208319080:web:06a5c518dcaab4640d75dd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const ticketsCol = collection(db, 'tickets');
+
+    const CONDITIONS = ['Pothole detected', 'Severe edge break', 'Surface patched', 'Manhole sunken'];
+    const VERDICTS   = ['VERIFIED', 'VERIFIED', 'VERIFIED', 'OFFICER_APPROVED', 'REJECTED'];
+    const SOURCES    = ['scanner', 'scanner', 'scanner', 'citizen'];
+    const STATUS     = ['OPEN', 'OPEN', 'OPEN', 'REPAIRED'];
+    
+    // Bounds approximately corresponding to Vadodara city
+    const LAT_MIN = 22.2500;
+    const LAT_MAX = 22.3500;
+    const LON_MIN = 73.1200;
+    const LON_MAX = 73.2300;
+
+    function log(msg, className='') {
+      const logEl = document.getElementById('log');
+      logEl.innerHTML += `<span class="${className}">${msg}</span><br>`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randFloat(min, max) { return (Math.random() * (max - min) + min).toFixed(5); }
+    function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function generateTicket(i) {
+      const isCitizen = randChoice([true, false, false, false]);
+      const verdict = randChoice(VERDICTS);
+      const conf = randInt(75, 98);
+      const lat = randFloat(LAT_MIN, LAT_MAX);
+      const lon = randFloat(LON_MIN, LON_MAX);
+      
+      let status = 'OPEN';
+      if (verdict === 'REJECTED') status = 'REJECTED';
+      else status = randChoice(STATUS);
+
+      const timestampMs = Date.now() - randInt(1000 * 60 * 60, 1000 * 60 * 60 * 24 * 30); // Up to 30 days old
+      const timestamp = new Date(timestampMs).toLocaleString('en-IN');
+
+      return {
+        id: `DEMO-${String(i).padStart(4, '0')}`,
+        condition: randChoice(CONDITIONS),
+        confidence: `${conf}%`,
+        location: `${lat}, ${lon}`,
+        snapshot: null, // Placeholder to save DB space during demo
+        satelliteImage: null,
+        verifyScore: verdict === 'REJECTED' ? randInt(20, 39) : randInt(75, 96),
+        verifyVerdict: verdict,
+        verifyReason: `AI evaluated satellite imagery at ${lat}, ${lon} and found pattern consistency.`,
+        source: isCitizen ? 'citizen' : 'scanner',
+        status: status,
+        timestamp: timestamp,
+        createdAt: timestampMs,
+        ...(status === 'REPAIRED' ? { repairedAt: timestampMs + randInt(1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24 * 7) } : {})
+      };
+    }
+
+    window.seedData = async function() {
+      const btn = document.getElementById('seedBtn');
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      log('Starting seed generation...');
+
+      try {
+        for (let i = 1; i <= 50; i++) {
+          const ticket = generateTicket(i);
+          await addDoc(ticketsCol, ticket);
+          log(`→ Inserted ${ticket.id} (${ticket.location})`, 'success');
+        }
+        log('🎉 Successfully seeded 50 demo tickets!', 'success');
+      } catch (err) {
+        log(`Error: ${err.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate 50 Demo Tickets';
+      }
+    };
+
+    window.clearData = async function() {
+      const btn = document.getElementById('clearBtn');
+      if (!confirm("Are you sure you want to delete ALL tickets from the database?")) return;
+      btn.disabled = true;
+      btn.textContent = 'Clearing...';
+      log('Fetching tickets to delete...');
+      
+      try {
+        const snap = await getDocs(ticketsCol);
+        let count = 0;
+        for (const document of snap.docs) {
+          await deleteDoc(doc(db, 'tickets', document.id));
+          count++;
+          log(`→ Deleted ticket ${document.id}`, 'error');
+        }
+        log(`🗑️ Successfully deleted ${count} tickets.`, 'success');
+      } catch(err) {
+        log(`Error: ${err.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Clear All Tickets';
+      }
+    };
+  </script>
+</body>
+</html>
