@@ -45,27 +45,27 @@
    RESILIENTPATH AI — FINTECH GLASSMORPHISM
 ═══════════════════════════════════════════════════ */
 :root {
-  --bg:       linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-  --surface:  rgba(255, 255, 255, 0.7);
-  --surface2: rgba(255, 255, 255, 0.4);
-  --border:   rgba(255, 255, 255, 0.5);
-  --border2:  rgba(255, 255, 255, 0.8);
+  --bg:       #f8fafc;
+  --surface:  #ffffff;
+  --surface2: #f1f5f9;
+  --border:   #cbd5e1;
+  --border2:  #94a3b8;
   --accent:   #0f172a;
   --accent2:  #1e293b;
-  --danger:   #e11d48;
-  --good:     #059669;
+  --danger:   #dc2626;
+  --good:     #16a34a;
   --warn:     #d97706;
-  --purple:   #7c3aed;
+  --purple:   #6366f1;
   --text:     #0f172a;
   --text2:    #334155;
   --text3:    #475569;
-  --radius:   16px;
-  --radius-sm:10px;
-  --shadow:   0 10px 30px rgba(0,0,0,0.06);
-  --accentbg: rgba(15, 23, 42, 0.05);
-  --dangerbg: rgba(225, 29, 72, 0.08);
+  --radius:   8px;
+  --radius-sm:4px;
+  --shadow:   0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --accentbg: rgba(15, 23, 42, 0.04);
+  --dangerbg: rgba(220, 38, 38, 0.08);
   --warnbg:   rgba(217, 119, 6, 0.08);
-  --goodbg:   rgba(5, 150, 105, 0.08);
+  --goodbg:   rgba(22, 163, 74, 0.08);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -107,12 +107,8 @@ body {
   font-weight:900;
   letter-spacing:4px;
   text-transform:uppercase;
-  background:linear-gradient(90deg, #0284c7 0%, #0ea5e9 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:logoShine 4s linear infinite;
+  color: var(--accent);
 }
-@keyframes logoShine{from{background-position:0% center}to{background-position:200% center}}
 .app-tagline {
   font-family:'Share Tech Mono',monospace;
   font-size:9px;letter-spacing:3px;color:var(--text3);
@@ -348,15 +344,38 @@ body {
 /* ── DASHBOARD SECTIONS ── */
 .dash-section{
   background:var(--surface);border:1px solid var(--border);
-  backdrop-filter: blur(12px);-webkit-backdrop-filter: blur(12px);
   border-radius:var(--radius);padding:16px;margin-bottom:12px;
   box-shadow:var(--shadow);
 }
 .dash-section-hdr{
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:12px;padding-bottom:10px;
-  border-bottom:1px solid var(--border);
+  margin-bottom:0;padding-bottom:10px;
+  border-bottom:1px solid transparent;
+  cursor: pointer;
+  user-select: none;
 }
+.dash-section-hdr.expanded {
+  margin-bottom:12px;
+  border-bottom-color: var(--border);
+}
+
+.accordion-body {
+  display: none;
+}
+.accordion-body.expanded {
+  display: block;
+}
+.accordion-toggle-icon {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  color: var(--accent);
+  transition: transform 0.2s;
+  padding-left: 8px;
+}
+.accordion-toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
 
 /* ── FORM ELEMENTS ── */
 .disp-field{display:flex;flex-direction:column;gap:5px;}
@@ -589,232 +608,260 @@ footer{
   <div class="tab-page" id="tab-dashboard">
     <div style="max-width:940px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px">
 
+      <!-- Active Context Banner -->
+      <div id="active-context-banner" style="display:none; background:var(--surface); border:1px solid var(--accent); border-left:4px solid var(--accent); padding:12px; border-radius:var(--radius); margin-bottom:4px; font-family:'Share Tech Mono',monospace; color:var(--accent);">
+        <div style="font-size:10px; font-weight:bold; letter-spacing:1px; margin-bottom:4px;">ACTIVE ROAD SEGMENT CONTEXT</div>
+        <div id="active-context-text" style="font-size:13px; font-family:'Rajdhani',sans-serif; color:var(--text); font-weight:700;">No Ticket Selected</div>
+      </div>
+
       <!-- Predictive Risk Engine -->
       <div class="dash-section" style="border-top:2px solid var(--accent)">
-        <div class="dash-section-hdr">
+        <div class="dash-section-hdr" onclick="toggleAccordion('predict-body', this)">
           <div>
-            <div class="dash-title" style="cursor:pointer" onclick="toggleCollapsible('predict-desc')">Predictive Risk Engine ▾</div>
-            <div id="predict-desc" style="display:none;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">AI forecasts which roads will fail next &mdash; before they are reported</div>
+            <div class="dash-title">Predictive Risk Engine</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">AI forecasts which roads will fail next</div>
           </div>
-          <button class="btn btn-sm" onclick="runPredictiveRisk()">Run Analysis</button>
+          <div style="display:flex;align-items:center;">
+             <span class="accordion-toggle-icon">▼</span>
+          </div>
         </div>
-        <div id="predictive-out">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);text-align:center;padding:20px">
-            Click Run Analysis to generate risk predictions from live ticket history, weather, and traffic data
+        <div id="predict-body" class="accordion-body">
+          <div style="display:flex; justify-content:flex-end; padding-top:10px;">
+            <button class="btn btn-sm" onclick="runPredictiveRisk()">Run Analysis</button>
+          </div>
+          <div id="predictive-out">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);text-align:center;padding:20px">
+              Click Run Analysis to generate risk predictions from live ticket history, weather, and traffic data
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Live GPS Map -->
-      <div class="dash-section">
-        <div class="dash-section-hdr">
+      <div class="dash-section" style="border-top:2px solid var(--accent)">
+        <div class="dash-section-hdr expanded" onclick="toggleAccordion('map-body', this)">
           <div>
             <div class="dash-title">Live GPS Map</div>
             <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">All verified detections &mdash; pins removed when repair confirmed</div>
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <span id="map-count" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3)">0 pins</span>
-            <button class="btn btn-sm" onclick="toggleMapLayer()" id="mapLayerBtn">Satellite View</button>
-            <button class="btn btn-sm" onclick="refreshMap()">&#x21BB;</button>
+          <span class="accordion-toggle-icon expanded">▼</span>
+        </div>
+        <div id="map-body" class="accordion-body expanded">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--danger);display:inline-block"></span>Pothole</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--warn);display:inline-block"></span>Broken</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--purple);display:inline-block"></span>Patched</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--good);display:inline-block"></span>Repaired</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span id="map-count" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3)">0 pins</span>
+              <button class="btn btn-sm" onclick="toggleMapLayer()" id="mapLayerBtn">Satellite View</button>
+              <button class="btn btn-sm" onclick="refreshMap()">&#x21BB;</button>
+            </div>
           </div>
+          <div id="google-map" style="width:100%;height:400px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm)"></div>
+          <div style="margin-top:8px" id="map-coords-list"></div>
         </div>
-        <!-- Legend -->
-        <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--danger);display:inline-block"></span>Pothole</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--warn);display:inline-block"></span>Broken</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--purple);display:inline-block"></span>Patched</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#38bdf8;display:inline-block"></span>Citizen</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--good);display:inline-block"></span>Repaired</span>
-        </div>
-        <div id="google-map" style="width:100%;height:400px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm)"></div>
-        <div style="margin-top:8px" id="map-coords-list"></div>
       </div>
 
       <!-- Satellite Verifier -->
       <div class="dash-section">
-        <div class="dash-section-hdr">
+        <div class="dash-section-hdr expanded" onclick="toggleAccordion('verifier-body', this)">
           <div>
             <div class="dash-title">Satellite Verifier</div>
             <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">
-              Mapbox Satellite (Maxar Vivid, sub-metre) &middot; Sentinel-2 (ESA, 10m) &middot; ISRO Bhuvan (India, 5m)
+              Mapbox Satellite (Maxar Vivid) &middot; Sentinel-2 &middot; ISRO Bhuvan
             </div>
           </div>
-          <button class="btn btn-sm" onclick="verifyLastTicket()">Re-run</button>
+          <span class="accordion-toggle-icon expanded">▼</span>
         </div>
-        <div id="verify-last-out" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);padding:16px;text-align:center">
-          No verified ticket yet. Mobile scanner will push results here automatically.
-        </div>
-        <!-- View Citizen Reports -->
-        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:1px;">CITIZEN COMPLAINTS QUEUE</div>
-            <button class="btn btn-sm" onclick="showToast('Queue refreshed')">Refresh</button>
+        <div id="verifier-body" class="accordion-body expanded">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+            <button class="btn btn-sm" onclick="verifyLastTicket()">Re-run Selected</button>
           </div>
-          <div id="citizen-queue-list" style="max-height:150px;overflow-y:auto;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);padding:10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-align:center;">
-             No pending citizen reports for verification at this time.
+          <div id="verify-last-out" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);padding:16px;text-align:center">
+            Select a ticket from the map to verify.
+          </div>
+          <!-- View Citizen Reports -->
+          <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:1px;">CITIZEN COMPLAINTS QUEUE</div>
+              <button class="btn btn-sm" onclick="showToast('Queue refreshed')">Refresh</button>
+            </div>
+            <div id="citizen-queue-list" style="max-height:150px;overflow-y:auto;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);padding:10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-align:center;">
+               No pending citizen reports for verification at this time.
+            </div>
           </div>
         </div>
       </div>
 
       <!-- AI Dispatch -->
       <div class="dash-section">
-        <div class="dash-section-hdr">
+        <div class="dash-section-hdr expanded" onclick="toggleAccordion('dispatch-body', this)">
           <div>
-            <div class="dash-title" style="cursor:pointer" onclick="toggleCollapsible('dispatch-desc')">AI Dispatch Engine ▾</div>
-            <div id="dispatch-desc" style="display:none;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">All signals auto-fetched &mdash; zero manual input</div>
+            <div class="dash-title">AI Dispatch Engine</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">All signals auto-fetched for Active Context</div>
           </div>
-          <button class="btn btn-sm" id="autoDispatchBtn" onclick="runAutoDispatch()">Run Dispatch</button>
+          <span class="accordion-toggle-icon expanded">▼</span>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="signal-grid">
-          <div class="dispatch-cell"><div class="dispatch-cell-label">Severity</div><div class="dispatch-cell-val" id="sig-sev">&mdash;</div></div>
-          <div class="dispatch-cell"><div class="dispatch-cell-label">Road type</div><div class="dispatch-cell-val" id="sig-road">&mdash;</div></div>
-          <div class="dispatch-cell"><div class="dispatch-cell-label">Traffic</div><div class="dispatch-cell-val" id="sig-traffic">&mdash;</div></div>
-          <div class="dispatch-cell"><div class="dispatch-cell-label">Weather 7d</div><div class="dispatch-cell-val" id="sig-weather">&mdash;</div></div>
-          <div class="dispatch-cell"><div class="dispatch-cell-label">Accidents</div><div class="dispatch-cell-val" id="sig-accident">&mdash;</div></div>
-          <div class="dispatch-cell"><div class="dispatch-cell-label">Workers</div><div class="dispatch-cell-val" id="sig-workers">5 avail.</div></div>
+        <div id="dispatch-body" class="accordion-body expanded">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+             <button class="btn btn-sm" id="autoDispatchBtn" onclick="runAutoDispatch()">Run Dispatch on Context</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="signal-grid">
+            <div class="dispatch-cell"><div class="dispatch-cell-label">Severity</div><div class="dispatch-cell-val" id="sig-sev">&mdash;</div></div>
+            <div class="dispatch-cell"><div class="dispatch-cell-label">Road type</div><div class="dispatch-cell-val" id="sig-road">&mdash;</div></div>
+            <div class="dispatch-cell"><div class="dispatch-cell-label">Traffic</div><div class="dispatch-cell-val" id="sig-traffic">&mdash;</div></div>
+            <div class="dispatch-cell"><div class="dispatch-cell-label">Weather 7d</div><div class="dispatch-cell-val" id="sig-weather">&mdash;</div></div>
+            <div class="dispatch-cell"><div class="dispatch-cell-label">Accidents</div><div class="dispatch-cell-val" id="sig-accident">&mdash;</div></div>
+            <div class="dispatch-cell"><div class="dispatch-cell-label">Workers</div><div class="dispatch-cell-val" id="sig-workers">5 avail.</div></div>
+          </div>
+          <div id="dispatch-out"></div>
         </div>
-        <div id="dispatch-out"></div>
       </div>
 
       <!-- Repair Intelligence -->
       <div class="dash-section">
-        <div class="dash-section-hdr">
+        <div class="dash-section-hdr expanded" onclick="toggleAccordion('repair-body', this)">
           <div>
             <div class="dash-title">Repair Intelligence</div>
-            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">AI-generated repair specification per detected condition</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">AI repair specifications (auto-fills from Dispatch)</div>
           </div>
+          <span class="accordion-toggle-icon expanded">▼</span>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div class="disp-field">
-            <div class="disp-lbl">Condition type</div>
-            <select class="disp-sel" id="r_sev" onchange="calcRepair()">
-              <option value="1">L1 &mdash; Surface crack</option>
-              <option value="2" selected>L2 &mdash; Pothole</option>
-              <option value="3">L3 &mdash; Structural failure</option>
-            </select>
+        <div id="repair-body" class="accordion-body expanded">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div class="disp-field">
+              <div class="disp-lbl">Condition type</div>
+              <select class="disp-sel" id="r_sev" onchange="calcRepair()">
+                <option value="1">L1 &mdash; Surface crack</option>
+                <option value="2" selected>L2 &mdash; Pothole</option>
+                <option value="3">L3 &mdash; Structural failure</option>
+                <option value="cluster">Multi &mdash; Segment Failure</option>
+              </select>
+            </div>
+            <div class="disp-field">
+              <div class="disp-lbl">Previous dig history</div>
+              <select class="disp-sel" id="r_dig" onchange="calcRepair()">
+                <option value="0" selected>None</option>
+                <option value="1">Water board &lt;6m</option>
+                <option value="2">Electric/telecom &lt;6m</option>
+                <option value="3">Multiple digs &lt;1yr</option>
+              </select>
+            </div>
+            <div class="disp-field">
+              <div class="disp-lbl">Traffic load</div>
+              <select class="disp-sel" id="r_traffic" onchange="calcRepair()">
+                <option value="1">Low</option>
+                <option value="2" selected>Medium</option>
+                <option value="3">Heavy / arterial</option>
+              </select>
+            </div>
+            <div class="disp-field">
+              <div class="disp-lbl">Current RHI score</div>
+              <select class="disp-sel" id="r_rhi" onchange="calcRepair()">
+                <option value="90">90&ndash;100 Excellent</option>
+                <option value="75" selected>75&ndash;89 Good</option>
+                <option value="60">60&ndash;74 Fair</option>
+                <option value="40">Below 60 Poor</option>
+              </select>
+            </div>
           </div>
-          <div class="disp-field">
-            <div class="disp-lbl">Previous dig history</div>
-            <select class="disp-sel" id="r_dig" onchange="calcRepair()">
-              <option value="0" selected>None</option>
-              <option value="1">Water board &lt;6m</option>
-              <option value="2">Electric/telecom &lt;6m</option>
-              <option value="3">Multiple digs &lt;1yr</option>
-            </select>
-          </div>
-          <div class="disp-field">
-            <div class="disp-lbl">Traffic load</div>
-            <select class="disp-sel" id="r_traffic" onchange="calcRepair()">
-              <option value="1">Low</option>
-              <option value="2" selected>Medium</option>
-              <option value="3">Heavy / arterial</option>
-            </select>
-          </div>
-          <div class="disp-field">
-            <div class="disp-lbl">Current RHI score</div>
-            <select class="disp-sel" id="r_rhi" onchange="calcRepair()">
-              <option value="90">90&ndash;100 Excellent</option>
-              <option value="75" selected>75&ndash;89 Good</option>
-              <option value="60">60&ndash;74 Fair</option>
-              <option value="40">Below 60 Poor</option>
-            </select>
-          </div>
+          <div id="repair-out"></div>
         </div>
-        <div id="repair-out"></div>
       </div>
 
       <!-- Dept Coordination Hub -->
       <div class="dash-section">
-        <div class="dash-section-hdr">
+        <div class="dash-section-hdr" onclick="toggleAccordion('coord-body', this)">
           <div>
             <div class="dash-title">Dept Coordination Hub</div>
-            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">Road surgery scheduler &mdash; AI detects cross-department conflicts</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">Road surgery scheduler &mdash; Cross-department conflicts</div>
           </div>
+          <span class="accordion-toggle-icon">▼</span>
         </div>
+        <div id="coord-body" class="accordion-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div class="disp-field">
+              <div class="disp-lbl">Dept A</div>
+              <select class="disp-sel" id="c_deptA" onchange="calcConflict()">
+                <option value="roads">Roads &mdash; resurfacing</option>
+                <option value="water">Water &mdash; pipeline</option>
+                <option value="elec">Electricity &mdash; cabling</option>
+                <option value="telecom">Telecom &mdash; fibre</option>
+              </select>
+            </div>
+            <div class="disp-field">
+              <div class="disp-lbl">Dept B</div>
+              <select class="disp-sel" id="c_deptB" onchange="calcConflict()">
+                <option value="water" selected>Water &mdash; pipeline</option>
+                <option value="roads">Roads &mdash; resurfacing</option>
+                <option value="elec">Electricity &mdash; cabling</option>
+                <option value="telecom">Telecom &mdash; fibre</option>
+              </select>
+            </div>
+            <div class="disp-field">
+              <div class="disp-lbl">Dept A timeline</div>
+              <select class="disp-sel" id="c_monthA" onchange="calcConflict()">
+                <option value="1">This month</option>
+                <option value="2" selected>In 2 months</option>
+                <option value="4">In 4 months</option>
+                <option value="6">In 6 months</option>
+              </select>
+            </div>
+            <div class="disp-field">
+              <div class="disp-lbl">Dept B timeline</div>
+              <select class="disp-sel" id="c_monthB" onchange="calcConflict()">
+                <option value="1">This month</option>
+                <option value="3" selected>In 3 months</option>
+                <option value="5">In 5 months</option>
+                <option value="7">In 7 months</option>
+              </select>
+            </div>
+          </div>
+          <div id="conflict-out"></div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div class="disp-field">
-            <div class="disp-lbl">Dept A</div>
-            <select class="disp-sel" id="c_deptA" onchange="calcConflict()">
-              <option value="roads">Roads &mdash; resurfacing</option>
-              <option value="water">Water &mdash; pipeline</option>
-              <option value="elec">Electricity &mdash; cabling</option>
-              <option value="telecom">Telecom &mdash; fibre</option>
-            </select>
+          <!-- Blockchain Dig Ledger -->
+          <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer;" onclick="toggleAccordion('ledger-inner', this.children[0])">
+              <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--warn);letter-spacing:1px;display:flex;align-items:center;gap:4px;">BLOCKCHAIN DIG LEDGER <span class="accordion-toggle-icon" style="padding-left:4px;">▼</span></div>
+            </div>
+            <div id="ledger-inner" class="accordion-body" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);line-height:1.9">
+              <div class="ledger-row"><span style="color:var(--accent)">ENTRY #001</span> &middot; Water Board &middot; Ward-07 &middot; Seg-W7-114<br><span>Dig depth: 1.4m &middot; Patch: Cold-mix &middot; 12 Jan 2026</span><br><span style="color:var(--warn)">RHI impact: &minus;8 pts attributed to Water Board</span></div>
+              <div class="ledger-row"><span style="color:var(--accent)">ENTRY #002</span> &middot; Torrent Gas &middot; Ward-07 &middot; Seg-W7-114<br><span>Dig depth: 0.9m &middot; Patch: Cold-mix &middot; 28 Feb 2026</span><br><span style="color:var(--warn)">RHI impact: &minus;6 pts attributed to Torrent Gas</span></div>
+              <div class="ledger-row"><span style="color:var(--good)">ENTRY #003</span> &middot; Roads Dept &middot; Ward-07 &middot; Seg-W7-114<br><span>Full resurfacing &middot; Hot-mix &middot; 100mm &middot; 15 Mar 2026</span><br><span style="color:var(--good)">RHI restored: +28 pts &middot; Contractor: Mehta Infra &#10003;</span></div>
+            </div>
           </div>
-          <div class="disp-field">
-            <div class="disp-lbl">Dept B</div>
-            <select class="disp-sel" id="c_deptB" onchange="calcConflict()">
-              <option value="water" selected>Water &mdash; pipeline</option>
-              <option value="roads">Roads &mdash; resurfacing</option>
-              <option value="elec">Electricity &mdash; cabling</option>
-              <option value="telecom">Telecom &mdash; fibre</option>
-            </select>
-          </div>
-          <div class="disp-field">
-            <div class="disp-lbl">Dept A timeline</div>
-            <select class="disp-sel" id="c_monthA" onchange="calcConflict()">
-              <option value="1">This month</option>
-              <option value="2" selected>In 2 months</option>
-              <option value="4">In 4 months</option>
-              <option value="6">In 6 months</option>
-            </select>
-          </div>
-          <div class="disp-field">
-            <div class="disp-lbl">Dept B timeline</div>
-            <select class="disp-sel" id="c_monthB" onchange="calcConflict()">
-              <option value="1">This month</option>
-              <option value="3" selected>In 3 months</option>
-              <option value="5">In 5 months</option>
-              <option value="7">In 7 months</option>
-            </select>
-          </div>
-        </div>
-        <div id="conflict-out"></div>
 
-        <!-- Blockchain Dig Ledger -->
-        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer;" onclick="toggleCollapsible('dig-ledger-details')">
-            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--warn);letter-spacing:1px;">BLOCKCHAIN DIG LEDGER ▾</div>
+          <!-- Ward RHI Scorecard -->
+          <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--good);letter-spacing:1px;margin-bottom:10px">WARD RHI SCORECARD &mdash; PUBLIC</div>
+            <div id="rhi-scorecard"></div>
           </div>
-          <div id="dig-ledger-details" style="display:none;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);line-height:1.9">
-            <div class="ledger-row"><span style="color:var(--accent)">ENTRY #001</span> &middot; Water Board &middot; Ward-07 &middot; Seg-W7-114<br><span>Dig depth: 1.4m &middot; Patch: Cold-mix &middot; 12 Jan 2026</span><br><span style="color:var(--warn)">RHI impact: &minus;8 pts attributed to Water Board</span></div>
-            <div class="ledger-row"><span style="color:var(--accent)">ENTRY #002</span> &middot; Torrent Gas &middot; Ward-07 &middot; Seg-W7-114<br><span>Dig depth: 0.9m &middot; Patch: Cold-mix &middot; 28 Feb 2026</span><br><span style="color:var(--warn)">RHI impact: &minus;6 pts attributed to Torrent Gas</span></div>
-            <div class="ledger-row"><span style="color:var(--good)">ENTRY #003</span> &middot; Roads Dept &middot; Ward-07 &middot; Seg-W7-114<br><span>Full resurfacing &middot; Hot-mix &middot; 100mm &middot; 15 Mar 2026</span><br><span style="color:var(--good)">RHI restored: +28 pts &middot; Contractor: Mehta Infra &#10003;</span></div>
-          </div>
-        </div>
-
-        <!-- Ward RHI Scorecard -->
-        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--good);letter-spacing:1px;margin-bottom:10px">WARD RHI SCORECARD &mdash; PUBLIC</div>
-          <div id="rhi-scorecard"></div>
         </div>
       </div>
 
       <!-- Trustless Economics Simulation -->
       <div class="dash-section" style="border-top:2px solid var(--purple)">
-        <div class="dash-section-hdr">
+        <div class="dash-section-hdr" onclick="toggleAccordion('civic-body', this)">
           <div>
-            <div class="dash-title" style="cursor:pointer" onclick="toggleCollapsible('civic-desc')">Civic-Yield Simulator ▾</div>
-            <div id="civic-desc" style="display:none;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">Simulate Contractor A vs B economics over 36 months</div>
+            <div class="dash-title">Civic-Yield Simulator</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px">Simulate Contractor A vs B economics over 36 months</div>
           </div>
-          <button class="btn btn-sm" onclick="runEconomicsSimulation()" id="simBtn">Run Simulation</button>
+          <span class="accordion-toggle-icon">▼</span>
         </div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.6">
-          <span style="color:var(--danger);font-weight:700">Contractor A:</span> Corners cut (fails at 3mo) &rarr; RHI penalties trigger.<br>
-          <span style="color:var(--good);font-weight:700">Contractor B:</span> Quality materials &rarr; 85% instant liquidity + 15% escrow release.
-        </div>
-        <div style="width:100%;height:220px;position:relative;">
-          <canvas id="civicYieldChart"></canvas>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--good);letter-spacing:1px;margin-bottom:10px">WARD RHI SCORECARD &mdash; PUBLIC</div>
-          <div id="rhi-scorecard"></div>
+        <div id="civic-body" class="accordion-body">
+          <div style="display:flex; justify-content:flex-end; padding-top:4px; padding-bottom:10px;">
+            <button class="btn btn-sm" onclick="runEconomicsSimulation()" id="simBtn">Run Simulation</button>
+          </div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.6">
+            <span style="color:var(--danger);font-weight:700">Contractor A:</span> Corners cut (fails at 3mo) &rarr; RHI penalties trigger.<br>
+            <span style="color:var(--good);font-weight:700">Contractor B:</span> Quality materials &rarr; 85% instant liquidity + 15% escrow release.
+          </div>
+          <div style="width:100%;height:220px;position:relative;">
+            <canvas id="civicYieldChart"></canvas>
+          </div>
         </div>
       </div>
 
@@ -958,7 +1005,7 @@ footer{
       }
       
       return `
-        <div class="ticket-card ${typeClass}">
+        <div class="ticket-card ${typeClass}" style="cursor:pointer" onclick="selectTicketContext('${t.firestoreId}')">
           <div class="ticket-top">
             <div class="ticket-id">${t.id || '—'}</div>
             <div style="display:flex;gap:6px;align-items:center;">
@@ -966,7 +1013,8 @@ footer{
               ${contractBadge}
               ${isNew ? '<span class="new-pill">● LIVE</span>' : ''}
               <div class="ticket-status ${(t.status||'OPEN').toLowerCase()}">${(t.status||'OPEN').toUpperCase()}</div>
-
+              <!-- Delete Action -->
+              <button title="Delete Ticket" onclick="event.stopPropagation(); deleteTicket('${t.firestoreId}')" style="background:transparent; border:none; cursor:pointer; font-size:12px; color:var(--danger); padding:2px;">🗑️</button>
             </div>
           </div>
           <div class="ticket-condition" style="color:${labelColor}">${(t.condition||'').toUpperCase().replace(/_/g,' ')}</div>
@@ -1203,8 +1251,8 @@ footer{
     if (!running) return;
     webcam.update();
     await predict();
-    // Throttle to ~15fps for moving bus — reduces lag, still catches potholes
-    animFrame = setTimeout(() => requestAnimationFrame(loop), 66);
+    // Throttle to ~4fps for smooth video and low GPU load
+    animFrame = setTimeout(() => requestAnimationFrame(loop), 250);
   }
 
   async function predict() {
@@ -1246,12 +1294,17 @@ footer{
       f.style.background = classColor(p.className);
     });
 
-    // Use per-class threshold — patched/broken roads have a lower gate than potholes
-    const classThresh = CLASS_THRESHOLD[top.className] !== undefined
+    // Add strict NO ROAD DETECTED override for false positives
+    const strictThreshold = 0.85; 
+    let classThresh = CLASS_THRESHOLD[top.className] !== undefined
       ? CLASS_THRESHOLD[top.className] : DEFAULT_THRESHOLD;
+    classThresh = Math.max(classThresh, strictThreshold); // Aggressive floor
+
     if (top.probability < classThresh) {
-      labelEl.textContent = 'SCANNING'; labelEl.style.color = 'var(--dim)';
-      confEl.textContent  = (top.probability * 100).toFixed(1) + '%'; confEl.style.color = 'var(--dim)';
+      labelEl.textContent = 'NO ROAD DETECTED / UNCLEAR'; 
+      labelEl.style.color = '#94a3b8';
+      confEl.textContent  = (top.probability * 100).toFixed(1) + '%'; 
+      confEl.style.color = '#94a3b8';
       document.getElementById('alert-badge').classList.remove('show');
       frameBuffer = []; // reset buffer when no clear detection
       return;
@@ -1333,31 +1386,22 @@ footer{
      AUTO DISPATCH ENGINE — all signals fetched automatically
   ════════════════════════════════════════ */
 
-  // Called when dispatch tab opens — pre-fetches signals from last bad-condition ticket
+  // Called when dispatch tab opens — uses Active Context
   async function calcDispatch() {
-    const tickets = window._tickets || [];
-    // Find the most recent ticket that is a bad road condition (pothole, broken, or patched)
-    const last = tickets.find(t => shouldGenerateTicket(t.condition));
-    if (!last) {
-      document.getElementById('dispatch-out').innerHTML =
-        `<div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--dim);padding:20px;text-align:center">
-          No road damage tickets yet.<br>Scan a pothole, broken road, or patched road first — dispatch auto-populates.
-        </div>`;
-      return;
-    }
-    await runAutoDispatch(last);
+    await runAutoDispatch();
   }
 
-  async function runAutoDispatch(ticketIn) {
+  async function runAutoDispatch() {
     const btn = document.getElementById('autoDispatchBtn');
     if (btn) btn.disabled = true;
 
-    const tickets = window._tickets || [];
-    const last = ticketIn || tickets.find(t => shouldGenerateTicket(t.condition));
+    const cluster = window._activeMergedContext || [];
+    const last = cluster.length > 0 ? cluster[0] : null;
+
     if (!last) {
       document.getElementById('dispatch-out').innerHTML =
         `<div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--dim);padding:20px;text-align:center">
-          No pothole ticket found. Run the scanner first.
+          No Active Context. Please select a ticket from the map or list first.
         </div>`;
       if (btn) btn.disabled = false;
       return;
@@ -1369,30 +1413,30 @@ footer{
     setSignal('sig-weather','— fetching...','var(--dim)');
     setSignal('sig-accident','— checking...','var(--dim)');
 
-    // ── 1. SEVERITY from condition type + confidence score ────────────────
-    const confNum = parseFloat((last.confidence||'0').replace('%',''));
-    let sev, sevLabel;
-    const cond = (last.condition||'').toLowerCase().trim();
-    if (cond === 'pothole') {
-      // Pothole: severity scales with detection confidence
-      if (confNum >= 92)      { sev = 3; sevLabel = 'L3 — Deep pothole (structural)'; }
-      else if (confNum >= 87) { sev = 2; sevLabel = 'L2 — Pothole'; }
-      else                    { sev = 1; sevLabel = 'L1 — Pothole (low conf.)'; }
-    } else if (cond === 'broken_road') {
-      // Broken road: medium-high severity regardless of exact confidence
-      sev = confNum >= 88 ? 3 : 2;
-      sevLabel = sev === 3 ? 'L3 — Severely broken surface' : 'L2 — Broken road surface';
-    } else if (cond === 'patched_road') {
-      // Patched road: generally lower severity (surface already treated once)
-      sev = 1;
-      sevLabel = 'L1 — Patched / deteriorating patch';
-    } else {
-      // Fallback for legacy tickets
-      if (confNum >= 92)      { sev = 3; sevLabel = 'L3 — Structural'; }
-      else if (confNum >= 87) { sev = 2; sevLabel = 'L2 — Damage'; }
-      else                    { sev = 1; sevLabel = 'L1 — Surface issue'; }
+    // ── 1. SEVERITY from grouped cluster ────────────────
+    let maxSev = 1;
+    let maxConf = 0;
+    cluster.forEach(t => {
+      const confNum = parseFloat((t.confidence||'0').replace('%',''));
+      let s = 1;
+      const cond = (t.condition||'').toLowerCase().trim();
+      if (cond === 'pothole') {
+        if (confNum >= 92) s = 3; else if (confNum >= 87) s = 2; else s = 1;
+      } else if (cond === 'broken_road') {
+        s = confNum >= 88 ? 3 : 2;
+      }
+      if (s > maxSev) maxSev = s;
+      if (confNum > maxConf) maxConf = confNum;
+    });
+
+    let sev = cluster.length > 1 ? Math.min(3, maxSev + 1) : maxSev; // Multi-damage bumps severity
+    let sevLabel = sev === 3 ? 'L3 — Structural / Segment Failure' : sev === 2 ? 'L2 — Moderate Damage' : 'L1 — Surface Issue';
+
+    if(cluster.length > 1) {
+      sevLabel = `L${sev} — ${cluster.length} clustered damages`;
     }
-    setSignal('sig-sev', sevLabel + ` (${confNum.toFixed(1)}% conf.)`, sev===3?'var(--danger)':sev===2?'var(--warn)':'var(--accent)');
+
+    setSignal('sig-sev', sevLabel + ` (max ${maxConf.toFixed(1)}% conf)`, sev===3?'var(--danger)':sev===2?'var(--warn)':'var(--accent)');
 
     // ── 2. ROAD TYPE from OpenStreetMap Nominatim reverse geocode ──────────
     let road = 2, roadLabel = 'Arterial road';
@@ -1478,8 +1522,19 @@ footer{
     const workers = 5;
     setSignal('sig-workers','5 available (Ward-07)','var(--accent)');
 
-    // ── SCORE & RENDER ─────────────────────────────────────────────────────
-    renderDispatchResult({ sev, road, traffic, weather, acc, workers, last });
+    // ── SCORE & RENDER & PIPELINE TO REPAIR INTELLIGENCE ──
+    renderDispatchResult({ sev, road, traffic, weather, acc, workers, last, isCluster: cluster.length > 1 });
+    
+    // Auto-Populate Repair Intelligence
+    const rSevSelect = document.getElementById('r_sev');
+    if (rSevSelect) {
+      rSevSelect.value = cluster.length > 1 ? "cluster" : sev.toString();
+    }
+    const rTrafSelect = document.getElementById('r_traffic');
+    if (rTrafSelect) rTrafSelect.value = traffic.toString();
+    
+    calcRepair();
+
     if (btn) btn.disabled = false;
   }
 
@@ -1564,6 +1619,9 @@ footer{
   /* ════════════════════════════════════════
      SATELLITE VERIFICATION ENGINE
   ════════════════════════════════════════ */
+
+    }
+  }
 
   // ── SATELLITE CONFIGURATION ──────────────────────────────────────────────
   // Using Mapbox Satellite: 50,000 free loads/month, sub-metre resolution
@@ -2435,7 +2493,7 @@ Scoring guide:
       const isNew = t.createdAt && (Date.now() - t.createdAt) < 86400000;
       coordRows.push(`
         <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer"
-             onclick="_map && _map.setCenter({lat:${lat},lng:${lon}}), _map.setZoom(18)">
+             onclick="_map && _map.setCenter({lat:${lat},lng:${lon}}), _map.setZoom(18); selectTicketContext('${t.firestoreId}');">
           <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>
           <span style="color:var(--accent);min-width:80px">${t.id||'—'}</span>
           <span style="color:var(--text)">${lat.toFixed(5)}, ${lon.toFixed(5)}</span>
@@ -2682,6 +2740,114 @@ Scoring guide:
         }
       }
     });
+  }
+  }
+
+  // ── UI AND STATE UTILITIES ───────────────────────────────────────────────
+  
+  window._activeContextId = null;
+  window._activeMergedContext = null;
+
+  function toggleAccordion(bodyId, headerEl) {
+    const body = document.getElementById(bodyId);
+    const icon = headerEl.querySelector('.accordion-toggle-icon');
+    if (body.classList.contains('expanded')) {
+      body.classList.remove('expanded');
+      headerEl.classList.remove('expanded');
+      if (icon) icon.classList.remove('expanded');
+    } else {
+      body.classList.add('expanded');
+      headerEl.classList.add('expanded');
+      if (icon) icon.classList.add('expanded');
+    }
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    var R = 6371e3; // metres
+    var φ1 = lat1 * Math.PI/180;
+    var φ2 = lat2 * Math.PI/180;
+    var Δφ = (lat2-lat1) * Math.PI/180;
+    var Δλ = (lon2-lon1) * Math.PI/180;
+    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; 
+  }
+
+  function selectTicketContext(id) {
+    if(!window._tickets) return;
+    const t = window._tickets.find(x => x.firestoreId === id);
+    if(!t) return;
+    
+    window._activeContextId = id;
+    
+    // Geospatial clustering (50m radius)
+    let cluster = [t];
+    if (t.location) {
+      const [lat, lon] = t.location.split(',').map(s=>parseFloat(s.trim()));
+      cluster = window._tickets.filter(other => {
+        if (!other.location || other.status === 'REPAIRED') return false;
+        const [oLat, oLon] = other.location.split(',').map(s=>parseFloat(s.trim()));
+        const dist = calculateDistance(lat, lon, oLat, oLon);
+        return dist <= 50; 
+      });
+      if(!cluster.find(x => x.firestoreId === id)) cluster.unshift(t);
+    }
+    
+    // De-duplicate cluster
+    const uniqueCluster = [];
+    const seen = new Set();
+    for(const item of cluster) {
+      if(!seen.has(item.firestoreId)) {
+        seen.add(item.firestoreId);
+        uniqueCluster.push(item);
+      }
+    }
+
+    window._activeMergedContext = uniqueCluster;
+
+    const banner = document.getElementById('active-context-banner');
+    const bText = document.getElementById('active-context-text');
+    if(banner) banner.style.display = 'block';
+    
+    if(bText) {
+      if (uniqueCluster.length > 1) {
+        bText.innerHTML = `TICKET ${t.id || id} <span style="color:var(--warn)">&middot; ${uniqueCluster.length} DAMAGES MERGED ON THIS ROAD SEGMENT (50m)</span>`;
+      } else {
+        bText.textContent = `TICKET ${t.id || id} (Isolated Damage)`;
+      }
+    }
+
+    // Auto trigger pipeline
+    switchTab('dashboard');
+    setTimeout(() => {
+      calcDispatch();
+    }, 150);
+  }
+
+  async function deleteTicket(firestoreDocId) {
+    if(!window._deleteDoc || !window._db) return;
+    if(!confirm("Permanently delete this ticket?")) return;
+    try {
+      await window._deleteDoc(window._doc(window._db, 'tickets', firestoreDocId));
+      
+      // Update UI manually temporarily
+      const btn = document.querySelector(`button[onclick*="${firestoreDocId}"]`);
+      if(btn) btn.closest('.ticket-card').remove();
+
+      showToast('Ticker deleted from cloud');
+      
+      if(window._activeContextId === firestoreDocId) {
+        document.getElementById('active-context-banner').style.display = 'none';
+        window._activeContextId = null;
+        window._activeMergedContext = null;
+        document.getElementById('dispatch-out').innerHTML = '';
+      }
+    } catch(e) {
+      console.error(e);
+      showToast('Error deleting ticket');
+    }
   }
 
 </script>
