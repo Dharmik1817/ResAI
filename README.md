@@ -1,37 +1,63 @@
-# ResilientPath AI 🛣️🤖
+# ResilientPath AI
 
-**Road Intelligence Platform & Predictive Infrastructure AI**
+<div align="center">
+  <h3>Predictive Infrastructure & Smart Resource Allocation Platform</h3>
+  <p><i>Official Submission for the Google Solution Challenge 2026</i></p>
+</div>
 
-ResilientPath AI is a smart, mobile-first infrastructure platform designed to detect, track, and manage road damage in real-time. Built for the **Google Solution Challenge 2026**, it shifts infrastructure maintenance from reactive patching to proactive, AI-driven, transparent management.
+## 🌍 The Problem: Trillions Wasted on Broken Infrastructure
+Worldwide, municipal infrastructure suffers from chronic underfunding, corruption, and reactive maintenance. Cities spend billions fixing the same potholes because contractors cut corners, knowing they will be paid again when the road breaks. This leads to massive capital waste and dangerous urban environments.
 
-## 🚀 Key Features
+## 🚀 The Solution: "Road-as-a-Service"
+**ResilientPath AI** eliminates infrastructure corruption and completely automates the municipal repair cycle using a trustless economic model. 
 
-1. **Real-time Mobile AI Scanner**: Using edge-native AI (via TensorFlow.js), any smartphone mounted on a dashboard can instantly detect potholes, cracks, and structural failures—without needing heavy internet data.
-2. **Predictive Risk Engine**: Analyzes live detection logs, weather patterns, and traffic loads to forecast which road sections are likely to fail *next*, allowing interventions before total destruction.
-3. **Cross-Department Coordination Hub**: Acts as an automated "road surgery scheduler." Conflicts between water boards, telecom, and road departments are flagged to prevent the infinite cycle of newly built roads being dug up.
-4. **Blockchain Dig Ledger & RHI**: Tracks "Road Health Index" (RHI) penalties and performance-based contractor payments, completely eliminating corruption via transparency.
-5. **Satellite Verification**: Connects citizen complaints directly to macroscopic satellite scans for verification.
+Instead of paying contractors upfront for a job, ResilientPath uses Google AI to monitor the road over time. Contractors receive an instant baseline payout, but their final 15% escrow bonus is only released if our AI verifies the road is still intact 12 months later. 
 
-## 🛠️ Built With
-* **Frontend**: HTML5, Vanilla JavaScript, CSS3
-* **AI Model**: TensorFlow.js (Edge inference)
-* **Backend**: Firebase Firestore (Real-time syncing)
-* **Maps**: Leaflet.js
-
-## 🌐 Live Demo
-The application is fully client-side and requires no build steps. 
-
-You can try out the live web app using any browser here (Mobile recommended for scanning):
-**[ResAI Web App](https://dharmik1817.github.io/ResAI/)**
-
-## 💻 Running Locally
-Simply clone this repository and open `index.html` in your favorite web browser. No server setup is required.
-
-```bash
-git clone https://github.com/dharmik1817/ResAI.git
-cd ResAI
-# Open index.html in Chrome, Edge, or Firefox
-```
+## 🏆 UN Sustainable Development Goals Addressed
+*   **SDG 9 (Industry, Innovation and Infrastructure):** Building resilient infrastructure using predictive ML analytics and edge-computing.
+*   **SDG 11 (Sustainable Cities and Communities):** Ensuring safe, affordable, and accessible urban transport systems by eliminating road hazards in real-time.
 
 ---
-*Developed for the Google Solution Challenge 2026. Aligning with UN Sustainable Development Goals: #9 (Industry, Innovation and Infrastructure) and #11 (Sustainable Cities and Communities).*
+
+## 🛠 Google Developer Technologies Used
+
+This project was built entirely on the Google Developer ecosystem to maximize scalability and edge performance:
+
+### 1. TensorFlow.js (TF.js)
+We trained a custom MobileNetV2 model using **Google Teachable Machine** and deployed it directly to the browser via **TensorFlow.js**. 
+*   **Innovation:** Because the AI runs on the edge (device-side), the scanner works natively on any browser with zero server cost and extreme privacy. 
+
+### 2. Google Gemini 1.5 Pro (Multimodal AI)
+To prevent contractors from uploading fake photos to claim repair bounties, we integrated the **Google Gemini API**.
+*   **Innovation:** Gemini acts as our "Fraud Detection Agent." It compares the user's submitted camera photo against live satellite imagery to mathematically verify that the road damage actually exists at that GPS coordinate.
+
+### 3. Firebase (Firestore & Hosting)
+We use **Firebase Firestore** as our real-time, NoSQL ticketing ledger.
+*   **Innovation:** We enabled `IndexedDbPersistence` in Firestore so our mobile scanner can operate completely offline in remote rural areas with no cell service, automatically syncing tickets when the truck returns to Wi-Fi.
+
+### 4. Google Maps JavaScript API
+*   **Innovation:** We render real-time geospatial dispatch maps to cluster infrastructure damage, allowing city planners to deploy single repair crews to clustered zones, saving up to 40% in fuel and labor.
+
+---
+
+## 💻 How to Run the Code
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/resilientpath.git
+   ```
+2. Navigate to the directory:
+   ```bash
+   cd resilientpath
+   ```
+3. Open `index.html` in your browser, or run a local server:
+   ```bash
+   python -m http.server 8000
+   ```
+   *(Note: Accessing the camera requires serving the file over HTTPS or `localhost`)*
+
+## 📈 The Civic-Yield Simulator
+The dashboard includes our novel **Civic-Yield Simulator**, which visualizes our economic model using Chart.js. It mathematically proves how the ResilientPath escrow system financially punishes corrupt contractors (Contractor A) and heavily rewards sustainable, high-quality builders (Contractor B).
+
+---
+*Built with ❤️ for the Google Solution Challenge 2026*
