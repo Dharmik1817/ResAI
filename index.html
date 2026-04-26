@@ -1183,7 +1183,7 @@ footer{
       if (testStream) testStream.getTracks().forEach(t => t.stop());
 
       // Step 2: now open through Teachable Machine webcam wrapper
-      webcam = new tmImage.Webcam(320, 240, false);
+      webcam = new tmImage.Webcam(640, 480, false);
       await webcam.setup({ facingMode: { ideal: 'environment' } });
       await webcam.play();
       const container = document.getElementById('webcam-container');
@@ -1231,8 +1231,7 @@ footer{
     }
 
     await predict();
-    // Throttle to ~4fps for smooth video and low GPU load — maintains efficient code score
-    animFrame = setTimeout(() => requestAnimationFrame(loop), 250);
+    animFrame = requestAnimationFrame(loop);
   }
 
   async function predict() {
